@@ -21,7 +21,7 @@ pip install -r requirements.txt
 python backend_app.py
 ```
 
-The server will start at `http://localhost:5000`
+The server will start at `http://localhost:8000`
 
 ### 3. Open Frontend
 Open `frontend.html` in your web browser
