@@ -2,9 +2,45 @@
 # checking coursera data
 import numpy as np
 import pandas as pd
+import time
+
+start_time=time.time()
 
 # Load the data
 df = pd.read_csv('/Users/era/Desktop/SPRING_2026/243_analytics_lab/AI_skills_roadmap/data/raw/skills/new_coursera_full_clean.csv')
+
+
+
+
+# ### CONVERT UNIQUE VALUES INTO ENGLISH:   
+# from deep_translator import GoogleTranslator
+
+# translator = GoogleTranslator(source='auto', target='en')
+
+# text_columns = df.select_dtypes(include=['object']).columns
+
+# for col in text_columns:
+#     print(f"Translating column: {col}")
+    
+#     unique_values = df[col].dropna().unique()
+    
+#     translation_map = {}
+    
+#     for val in unique_values:
+#         try:
+#             translation_map[val] = translator.translate(str(val))
+#         except:
+#             translation_map[val] = val
+    
+#     df[col] = df[col].map(translation_map)
+
+# print("All categorical columns translated efficiently.")
+
+
+
+
+
+
 
 # Check shapes of coursera dataset / inspect data
 print(f"\nDataset shape: {df.shape}")
@@ -58,6 +94,9 @@ else:
     print("\nNo columns have more than 50% missing data.")
 
 print("\nEDA Completed Successfully!")
+
+
+
 
 
 ### VISUAL EDA GRAPHS (nulls, organizations, languages, ratings)
@@ -272,3 +311,95 @@ print("Missing Values Statistics (Including 0 as Missing)")
 print("="*80 + "\n")
 print(missing_stats.to_string(index=False))
 print('kyra code done, confirmed: missing counts match Kyra"s results')
+
+### CORRELATION MATRIX
+numeric_df = df.select_dtypes(include=[np.number])
+
+plt.figure(figsize=(8,6))
+sns.heatmap(numeric_df.corr(), annot=True, cmap="coolwarm")
+plt.title("Correlation Matrix of Numeric Features")
+plt.tight_layout()
+plt.show()
+print('correlation matrix done')
+
+### OUTLIER DETECTION (using boxplot)
+plt.figure(figsize=(6,4))
+sns.boxplot(x=df["Ratings"])
+plt.title("Ratings Boxplot (Outlier Detection)")
+plt.show()
+print('boxplot done')
+
+###More advanced analysis: comparisons
+# rating vs organization
+org_rating = df.groupby("Organization")["Ratings"].mean().sort_values(ascending=False).head(10)
+
+plt.figure(figsize=(8,5))
+org_rating.plot(kind="bar")
+plt.title("Top Organizations by Average Rating")
+plt.ylabel("Average Rating")
+plt.xticks(rotation=45)
+plt.show()
+print('org vs rating done')
+
+# language vs rating
+lang_rating = df.groupby("Language")["Ratings"].mean().sort_values(ascending=False).head(10)
+
+plt.figure(figsize=(8,5))
+lang_rating.plot(kind="bar")
+plt.title("Ratings vs. Language")
+plt.ylabel("Average Rating")
+plt.xticks(rotation=45)
+plt.show() 
+
+### ZOOM into rating vs lang (rating 4.6-5)
+plt.figure(figsize=(8,5))
+lang_rating.plot(kind="bar")
+plt.ylim(4.6,5)
+plt.title("Ratings vs. Language")
+plt.ylabel("Average Rating")
+plt.xticks(rotation=45)
+plt.show() 
+
+print('language vs rating done')
+
+#workload distribution after normalization
+plt.figure(figsize=(8,5))
+plt.ylabel("Frequency")
+plt.xlabel("Normalized Workload")
+df["Workload_norm"].value_counts().head(10).plot(kind="bar")
+plt.title("Top 10 Normalized Workload Categories")
+plt.xticks(rotation=45)
+plt.show()
+print('workload distribution done')
+
+###---------------------------------------------
+# 1. Calculate both the mean and the count (sample size)
+# Replace 'df' with your actual dataframe name
+stats = df.groupby("Language")["Ratings"].agg(['mean', 'count']).sort_values('mean', ascending=False)
+
+# 2. Setup the plot using your specific settings
+plt.figure(figsize=(8,5))
+# We plot the 'mean' column
+ax = stats['mean'].plot(kind="bar", color="royalblue", alpha=0.8)
+
+# 3. Add the sample size (count) text above each bar
+for i, v in enumerate(stats['mean']):
+    # Get the count for this specific language
+    n_size = stats['count'].iloc[i]
+    # Place the text: (x-position, y-position, string)
+    ax.text(i, v + 0.005, f'n={int(n_size)}', ha='center', va='bottom', fontweight='bold', fontsize=9)
+
+# 4. Your specific formatting
+plt.ylim(4.6, 4.925) # Your requested "Zoom"
+plt.title("Ratings vs. Language")
+plt.ylabel("Average Rating")
+plt.xticks(rotation=45)
+
+plt.tight_layout()
+plt.show()
+###---------------------------------------------
+
+
+end_time=time.time()
+print(f"\nTotal runtime: {round(end_time - start_time, 2)} seconds")
+
