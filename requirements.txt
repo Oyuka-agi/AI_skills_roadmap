@@ -1,0 +1,6 @@
+# Create the file and add the necessary libraries
+echo "streamlit" > requirements.txt
+echo "joblib" >> requirements.txt
+echo "pandas" >> requirements.txt
+echo "PyPDF2" >> requirements.txt
+echo "scikit-learn" >> requirements.txt
