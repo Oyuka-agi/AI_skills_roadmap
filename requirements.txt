@@ -1,8 +1,9 @@
-streamlit
-joblib
-numpy
+streamlit>=1.23.0
 pandas
+numpy
 PyPDF2
-scikit-learn
-spacy
+spacy==3.5.0
 skillNer
+ipython
+joblib
+https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.5.0/en_core_web_sm-3.5.0-py3-none-any.whl
