@@ -81,3 +81,5 @@ Personalized Learning Roadmap
 ---
 
 ### 3. Optimization Model
+- Maximize total skill coverage (importance-weighted)
+- subject to time constraint
